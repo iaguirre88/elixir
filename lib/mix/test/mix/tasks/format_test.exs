@@ -194,6 +194,35 @@ defmodule Mix.Tasks.FormatTest do
     end)
   end
 
+  test "excludes pattern in exclude from .formatter.exs", context do
+    in_tmp(context.test, fn ->
+      File.write!(".formatter.exs", """
+      [
+        inputs: ["*.ex"],
+        exclude: ["b.ex"]
+      ]
+      """)
+
+      File.write!("a.ex", """
+      foo bar
+      """)
+
+      File.write!("b.ex", """
+      foo bar
+      """)
+
+      Mix.Tasks.Format.run([])
+
+      assert File.read!("a.ex") == """
+             foo(bar)
+             """
+
+      assert File.read!("b.ex") == """
+             foo bar
+             """
+    end)
+  end
+
   defmodule Elixir.SigilWPlugin do
     @behaviour Mix.Tasks.Format
 

@@ -467,9 +467,16 @@ defmodule Mix.Tasks.Format do
       Mix.raise("Expected :inputs or :subdirectories key in #{dot_formatter}")
     end
 
+    exclude = List.wrap(formatter_opts[:exclude])
+
+    exclude_path =
+      if exclude != [],
+        do: Path.wildcard(Path.join(prefix ++ [exclude]), match_dot: true),
+        else: []
+
     map =
       for input <- List.wrap(formatter_opts[:inputs]),
-          file <- Path.wildcard(Path.join(prefix ++ [input]), match_dot: true),
+          file <- Path.wildcard(Path.join(prefix ++ [input]), match_dot: true) -- exclude_path,
           do: {expand_relative_to_cwd(file), {dot_formatter, formatter_opts}},
           into: %{}
 
