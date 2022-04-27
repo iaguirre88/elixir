@@ -29,6 +29,10 @@ defmodule Mix.Tasks.Format do
       to be used by this task. For example, `["mix.exs", "{config,lib,test}/**/*.{ex,exs}"]`.
       Patterns are expanded with `Path.wildcard/2`.
 
+    * `:exclude` (a list of paths and patterns) - specifies files and
+      directories to be excluded by this task.
+      Patterns are expanded with `Path.wildcard/2`.
+
     * `:plugins` (a list of modules) (since v1.13.0) - specifies a list of
       modules to customize how the formatter works. See the "Plugins" section
       below for more information.
