@@ -279,10 +279,15 @@ defmodule ExUnit.CLIFormatter do
   defp print_summary(config, force_failures?) do
     formatted_test_type_counts = format_test_type_counts(config)
     test_type_counts = collect_test_type_counts(config)
+    test_run_counts = collect_test_run_count(config)
     failure_pl = pluralize(config.failure_counter, "failure", "failures")
 
     message =
       "#{formatted_test_type_counts}#{config.failure_counter} #{failure_pl}"
+      |> if_true(
+        config.excluded_counter > 0 || config.invalid_counter > 0 || config.skipped_counter > 0,
+        &(&1 <> ", #{test_run_counts} run")
+      )
       |> if_true(
         config.excluded_counter > 0,
         &(&1 <> ", #{config.excluded_counter} excluded")
@@ -350,6 +355,19 @@ defmodule ExUnit.CLIFormatter do
       acc + count
     end)
   end
+
+  defp collect_test_run_count(
+         %{
+           test_counter: %{test: test_counter},
+           excluded_counter: excluded_counter,
+           invalid_counter: invalid_counter,
+           skipped_counter: skipped_counter
+         } = _config
+       ) do
+    test_counter - excluded_counter - invalid_counter - skipped_counter
+  end
+
+  defp collect_test_run_count(_config), do: 0
 
   # Color styles
 
