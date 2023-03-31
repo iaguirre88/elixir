@@ -228,7 +228,7 @@ defmodule Mix.Tasks.TestTest do
         # Of the passing tests, 1 is tagged with `@tag :foo`.
         # But only the failing test with that tag should run.
         output = mix(["test", "--failed", "--only", "foo"])
-        assert output =~ "2 tests, 1 failure, 1 excluded"
+        assert output =~ "2 tests, 1 failure, 1 run, 1 excluded"
 
         # Run again to give it a chance to record as passed
         System.put_env("PASS_FAILING_TESTS", "true")
